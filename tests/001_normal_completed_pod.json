@@ -1,0 +1,254 @@
+{
+    "apiVersion": "v1",
+    "kind": "Pod",
+    "metadata": {
+        "creationTimestamp": "2020-07-22T04:51:22Z",
+        "generateName": "primehub-bootstrap-",
+        "labels": {
+            "app.kubernetes.io/instance": "primehub",
+            "app.kubernetes.io/name": "primehub",
+            "component": "bootstrap",
+            "controller-uid": "0995aada-77f6-49e1-8a78-6ecbebecfd1d",
+            "job-name": "primehub-bootstrap"
+        },
+        "name": "primehub-bootstrap-2fcn4",
+        "namespace": "hub",
+        "ownerReferences": [
+            {
+                "apiVersion": "batch/v1",
+                "blockOwnerDeletion": true,
+                "controller": true,
+                "kind": "Job",
+                "name": "primehub-bootstrap",
+                "uid": "0995aada-77f6-49e1-8a78-6ecbebecfd1d"
+            }
+        ],
+        "resourceVersion": "3927003",
+        "selfLink": "/api/v1/namespaces/hub/pods/primehub-bootstrap-2fcn4",
+        "uid": "c368e165-93ae-43ff-8a3d-08ba15f16f3c"
+    },
+    "spec": {
+        "containers": [
+            {
+                "command": [
+                    "bash",
+                    "/bootstrap/bootstrap.sh"
+                ],
+                "env": [
+                    {
+                        "name": "PRIMEHUB_NAMESPACE",
+                        "value": "hub"
+                    },
+                    {
+                        "name": "KC_URL",
+                        "value": "http://id.qrtt1.aws.primehub.io/auth"
+                    },
+                    {
+                        "name": "KC_USER",
+                        "value": "keycloak"
+                    },
+                    {
+                        "name": "KC_PASSWORD",
+                        "valueFrom": {
+                            "secretKeyRef": {
+                                "key": "kcpassword",
+                                "name": "primehub-bootstrap"
+                            }
+                        }
+                    },
+                    {
+                        "name": "KC_REALM",
+                        "value": "primehub"
+                    },
+                    {
+                        "name": "KC_SSL_REQUIRED",
+                        "value": "none"
+                    },
+                    {
+                        "name": "ADMIN_UI_CLIENT_ID",
+                        "value": "admin-ui"
+                    },
+                    {
+                        "name": "ADMIN_UI_CLIENT_SECRET",
+                        "valueFrom": {
+                            "secretKeyRef": {
+                                "key": "client_secret",
+                                "name": "primehub-client-admin-ui",
+                                "optional": true
+                            }
+                        }
+                    },
+                    {
+                        "name": "ADMIN_UI_REDIRECT_URI",
+                        "value": "http://hub.qrtt1.aws.primehub.io/console/*"
+                    },
+                    {
+                        "name": "JUPYTERHUB_CLIENT_ID",
+                        "value": "jupyterhub"
+                    },
+                    {
+                        "name": "JUPYTERHUB_REDIRECT_URI",
+                        "value": "http://hub.qrtt1.aws.primehub.io/*"
+                    },
+                    {
+                        "name": "MAINTENANCE_PROXY_CLIENT_ID",
+                        "value": "maintenance-proxy"
+                    },
+                    {
+                        "name": "MAINTENANCE_PROXY_REDIRECT_URI",
+                        "value": "http://hub.qrtt1.aws.primehub.io/maintenance/*"
+                    },
+                    {
+                        "name": "PH_USER",
+                        "value": "phadmin"
+                    },
+                    {
+                        "name": "PH_PASSWORD",
+                        "valueFrom": {
+                            "secretKeyRef": {
+                                "key": "password",
+                                "name": "primehub-bootstrap"
+                            }
+                        }
+                    },
+                    {
+                        "name": "PH_GROUP",
+                        "value": "phusers"
+                    },
+                    {
+                        "name": "PRIMEHUB_MODE",
+                        "value": "ee"
+                    }
+                ],
+                "image": "infuseai/primehub-bootstrap:20191022",
+                "imagePullPolicy": "IfNotPresent",
+                "name": "bootstrap",
+                "resources": {
+                    "limits": {
+                        "cpu": "500m",
+                        "memory": "128Mi"
+                    },
+                    "requests": {
+                        "cpu": "50m",
+                        "memory": "128Mi"
+                    }
+                },
+                "terminationMessagePath": "/dev/termination-log",
+                "terminationMessagePolicy": "File",
+                "volumeMounts": [
+                    {
+                        "mountPath": "/bootstrap",
+                        "name": "bootstrap"
+                    },
+                    {
+                        "mountPath": "/var/run/secrets/kubernetes.io/serviceaccount",
+                        "name": "primehub-bootstrap-token-ngvmj",
+                        "readOnly": true
+                    }
+                ]
+            }
+        ],
+        "dnsPolicy": "ClusterFirst",
+        "enableServiceLinks": true,
+        "nodeName": "ip-172-31-0-39",
+        "priority": 0,
+        "restartPolicy": "Never",
+        "schedulerName": "default-scheduler",
+        "securityContext": {},
+        "serviceAccount": "primehub-bootstrap",
+        "serviceAccountName": "primehub-bootstrap",
+        "terminationGracePeriodSeconds": 30,
+        "tolerations": [
+            {
+                "effect": "NoExecute",
+                "key": "node.kubernetes.io/not-ready",
+                "operator": "Exists",
+                "tolerationSeconds": 300
+            },
+            {
+                "effect": "NoExecute",
+                "key": "node.kubernetes.io/unreachable",
+                "operator": "Exists",
+                "tolerationSeconds": 300
+            }
+        ],
+        "volumes": [
+            {
+                "configMap": {
+                    "defaultMode": 420,
+                    "name": "primehub-bootstrap-scripts"
+                },
+                "name": "bootstrap"
+            },
+            {
+                "name": "primehub-bootstrap-token-ngvmj",
+                "secret": {
+                    "defaultMode": 420,
+                    "secretName": "primehub-bootstrap-token-ngvmj"
+                }
+            }
+        ]
+    },
+    "status": {
+        "conditions": [
+            {
+                "lastProbeTime": null,
+                "lastTransitionTime": "2020-07-22T04:51:22Z",
+                "reason": "PodCompleted",
+                "status": "True",
+                "type": "Initialized"
+            },
+            {
+                "lastProbeTime": null,
+                "lastTransitionTime": "2020-07-22T04:56:17Z",
+                "reason": "PodCompleted",
+                "status": "False",
+                "type": "Ready"
+            },
+            {
+                "lastProbeTime": null,
+                "lastTransitionTime": "2020-07-22T04:56:17Z",
+                "reason": "PodCompleted",
+                "status": "False",
+                "type": "ContainersReady"
+            },
+            {
+                "lastProbeTime": null,
+                "lastTransitionTime": "2020-07-22T04:51:22Z",
+                "status": "True",
+                "type": "PodScheduled"
+            }
+        ],
+        "containerStatuses": [
+            {
+                "containerID": "containerd://2d5f7725750c7d7654bc2acd21a41981784b2c9e4d094374935f5127f05fc13d",
+                "image": "docker.io/infuseai/primehub-bootstrap:20191022",
+                "imageID": "docker.io/infuseai/primehub-bootstrap@sha256:cc4f5044729db67cd1d5f1a980fd60001f63af907f1b8a975c3c0840795e9f8d",
+                "lastState": {},
+                "name": "bootstrap",
+                "ready": false,
+                "restartCount": 0,
+                "started": false,
+                "state": {
+                    "terminated": {
+                        "containerID": "containerd://2d5f7725750c7d7654bc2acd21a41981784b2c9e4d094374935f5127f05fc13d",
+                        "exitCode": 0,
+                        "finishedAt": "2020-07-22T04:56:16Z",
+                        "reason": "Completed",
+                        "startedAt": "2020-07-22T04:51:23Z"
+                    }
+                }
+            }
+        ],
+        "hostIP": "172.31.0.39",
+        "phase": "Succeeded",
+        "podIP": "10.1.64.200",
+        "podIPs": [
+            {
+                "ip": "10.1.64.200"
+            }
+        ],
+        "qosClass": "Burstable",
+        "startTime": "2020-07-22T04:51:22Z"
+    }
+}
