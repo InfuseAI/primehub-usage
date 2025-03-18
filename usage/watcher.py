@@ -39,12 +39,21 @@ def _parse_usage_annotation(metadata):
         return None
     return json.loads(usage_annotation)
 
+def _get_gpu_request(requests):
+    if 'nvidia.com/gpu' in requests:
+        return requests.get('nvidia.com/gpu')
+    if 'amd.com/gpu' in requests:
+        return requests.get('amd.com/gpu')
+    for k, v in requests.items():
+        if k.startswith('gpu.intel.com/'):
+            return v
+    return 0
 
 def get_resources(pod):
     cpu = sum([parse_quantity(x.resources.to_dict().get("requests")['cpu']) for x in pod.spec.containers])
     memory = sum(
         [parse_quantity(x.resources.to_dict().get("requests")['memory']) for x in pod.spec.containers])
-    gpu = sum([parse_quantity(x.resources.to_dict().get("requests").get('nvidia.com/gpu', Decimal("0"))) for x in
+    gpu = sum([parse_quantity(_get_gpu_request(x.resources.to_dict().get("requests"))) for x in
                pod.spec.containers])
     return gpu, cpu, memory
 
